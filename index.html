@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Claim Status Report - Setia Sky Ville 2</title>
+    <style>
+        /* ==========================================
+           1. CORE PORTAL & LOGIN STYLES
+           ========================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body.login-mode {
+            background: radial-gradient(circle at top right, #1e293b, #0f172a);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #f8fafc;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        .logo-area {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 12px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .logo-area svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+        }
+
+        h2.login-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        p.subtitle {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            text-align: left;
+            position: relative;
+        }
+
+        label.login-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input.login-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input.login-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-submit:disabled {
+            background: #475569;
+            color: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .notification {
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 24px;
+            display: none;
+            text-align: left;
+            line-height: 1.4;
+        }
+
+        .notification.error {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            display: block;
+        }
+
+        .notification.success {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #86efac;
+            display: block;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ==========================================
+           2. DASHBOARD STRUCTURAL LAYOUT STYLES
+           ========================================== */
+        body.dashboard-mode {
+            background-color: #f0f2f5;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .report-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 1550px;
+            margin: 0 auto;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 3px solid #2c3e50;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+        }
+        
+        .header-section p {
+            color: #333;
+        }
+
+        .project-title {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .header-details {
+            font-size: 0.95em;
+            color: #555;
+            text-align: right;
+        }
+
+        h1.dash-heading {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.2em;
+        }
+
+        h2.dash-subheading {
+            color: #34495e;
+            border-left: 5px solid #3498db;
+            padding-left: 15px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            text-transform: none;
+        }
+
+        .action-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+
+        .btn-logout {
+            padding: 8px 16px;
+            background-color: #e11d48;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .btn-logout:hover {
+            background-color: #be123c;
+        }
+
+        /* Variation Order controls */
+        .vo-toolbar {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-vo {
+            padding: 9px 18px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-vo:hover { background-color: #2980b9; }
+        .btn-vo.secondary { background-color: #27ae60; }
+        .btn-vo.secondary:hover { background-color: #1e8449; }
+
+        .vo-hint {
+            font-size: 0.8em;
+            color: #777;
+            font-style: italic;
+            margin-left: auto;
+        }
+
+        #voTable td.vo-desc {
+            text-align: left;
+            font-weight: normal;
+            background: #fff;
+        }
+
+        #voTable td.vo-center {
+            text-align: center;
+            font-weight: normal;
+            background: #fff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: white;
+            font-size: 0.8em;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: right;
+            border: 1px solid #e0e0e0;
+        }
+
+        th {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        td:first-child {
+            text-align: center;
+            font-weight: bold;
+            background-color: #f8f9fa;
+        }
+
+        .date-col {
+            text-align: center;
+        }
+
+        .variance-neg {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+
+        .status-received {
+            color: #2e7d32;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .status-not-due {
+            color: #f39c12;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .status-due {
+            color: #c0392b;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .received-col {
+            background-color: #e8f5e9;
+            font-weight: bold;
+        }
+
+        .cert-aft-rent-col {
+            background-color: #f1f8ff;
+            font-weight: bold;
+            color: #0366d6;
+        }
+
+        .invoice-col {
+            background-color: #fffde7;
+            text-align: center;
+            font-family: monospace;
+        }
+
+        .chart-box {
+            margin: 20px 0 40px 0;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+
+        .chart-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .bar-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .bar {
+            height: 20px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            color: white;
+            font-size: 0.75em;
+            font-weight: bold;
+            min-width: 10px;
+        }
+
+        .bar-pc  { background: linear-gradient(90deg, #3498db, #2980b9); }
+        .bar-vc  { background: linear-gradient(90deg, #2c3e50, #34495e); }
+        .bar-cert{ background: linear-gradient(90deg, #0366d6, #0056b3); }
+        .bar-received { background: linear-gradient(90deg, #27ae60, #2ecc71); }
+
+        .chart-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .chart-label {
+            width: 140px;
+            font-weight: bold;
+            font-size: 0.9em;
+            color: #333;
+        }
+
+        .graph-svg {
+            width: 100%;
+            height: 450px;
+            background: #fff;
+            border: 1px solid #eee;
+            margin-top: 10px;
+        }
+
+        .axis { stroke: #95a5a6; stroke-width: 2; }
+        .grid-line { stroke: #f0f0f0; stroke-width: 1; }
+        .axis-label { font-size: 11px; fill: #7f8c8d; }
+        .line-forecast { fill: none; stroke: #e67e22; stroke-width: 3; stroke-linecap: round; }
+        .line-actual-vc { fill: none; stroke: #2c3e50; stroke-width: 3; stroke-dasharray: 5,5; }
+        .data-point-vc { fill: #2c3e50; }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+            font-size: 0.85em;
+            flex-wrap: wrap;
+        }
+
+        .legend-item { display: flex; align-items: center; gap: 8px; color: #333;}
+        .legend-dot { width: 14px; height: 14px; border-radius: 3px; }
+        .legend-line { width: 30px; height: 3px; }
+
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.85em;
+            color: #95a5a6;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body id="portalBody" class="login-mode">
+
+<!-- ==========================================
+     SECTION A: SECURE LOGIN SCREEN VIEW
+     ========================================== -->
+<div id="loginView" class="login-card">
+    <div class="logo-area">
+        <svg viewBox="0 0 24 24">
+            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+        </svg>
+    </div>
+    
+    <h2 class="login-title">Welcome Back</h2>
+    <p class="subtitle">Enter your registered email and password to log in.</p>
+
+    <div id="msgBox" class="notification"></div>
+
+    <form id="loginForm">
+        <div class="form-group">
+            <label class="login-label" for="email">Email Address</label>
+            <input type="email" id="email" class="login-input" required placeholder="name@company.com" autocomplete="email">
+        </div>
+        
+        <div class="form-group">
+            <label class="login-label" for="password">Password</label>
+            <input type="password" id="password" class="login-input" required placeholder="••••••••" autocomplete="current-password">
+        </div>
+        
+        <button type="submit" id="submitBtn" class="btn-submit">
+            <span id="btnText">Sign In</span>
+            <div id="btnSpinner" class="spinner"></div>
+        </button>
+    </form>
+</div>
+
+<!-- ==========================================
+     SECTION B: SECURE REPORT DASHBOARD VIEW
+     ========================================== -->
+<div id="dashboardView" style="display: none; width: 100%;">
+    <div class="action-bar">
+        <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
+    </div>
+    
+    <div class="report-container">
+        <div class="header-section">
+            <div>
+                <h3 class="project-title">Setia Sky Ville 2</h3>
+                <p style="margin-top: 5px;"><strong>Contractor:</strong> Alunan Asas Sdn. Bhd.<br>
+                <strong>Consultant QS:</strong> Unitech QS Consultancy Sdn. Bhd.</p>
+            </div>
+            <div class="header-details">
+                <strong>Current Status:</strong> Progress Claim No. <span id="currentStatusPC">6</span>
+            </div>
+        </div>
+
+        <h1 class="dash-heading">REPORT ON PROGRESS CLAIM STATUS</h1>
+
+        <h2 class="dash-subheading">Table 1: Comparison of Cumulative Gross Amounts</h2>
+        <div class="vo-toolbar">
+            <button type="button" class="btn-vo" onclick="downloadTemplate('t1')">&#11015; Download Template (CSV)</button>
+            <label class="btn-vo secondary">
+                &#11014; Upload Data (CSV)
+                <input type="file" accept=".csv,text/csv" style="display:none;" onchange="handleUpload('t1',event)">
+            </label>
+            <span class="vo-hint">Download brings the current Table 1 data. Edit in Excel, save as CSV, then upload to update (upload replaces the whole table). Leave CQS blank for pending.</span>
+            <span id="t1SaveMsg" style="font-size:0.8em; font-weight:600; margin-left:6px;"></span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Progress Claim Submission Date</th>
+                    <th>CQS Cert Date &amp; Architect Cert Date</th>
+                    <th>Progress Claim (Gross RM)</th>
+                    <th>CQS Valuation (Gross RM)</th>
+                    <th>Variance (RM)</th>
+                </tr>
+            </thead>
+            <tbody id="t1body">
+                <tr>
+                    <td>1</td>
+                    <td class="date-col">27 Jan 2026</td>
+                    <td class="date-col">03 Feb 2026</td>
+                    <td>985,666.10</td>
+                    <td>935,263.87</td>
+                    <td class="variance-neg">(50,402.23)</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td class="date-col">11 Mar 2026</td>
+                    <td class="date-col">16 Mar 2026</td>
+                    <td>1,750,178.38</td>
+                    <td>1,529,997.60</td>
+                    <td class="variance-neg">(220,180.78)</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td class="date-col">29 Mar 2026</td>
+                    <td class="date-col">13 Apr 2026</td>
+                    <td>1,775,180.71</td>
+                    <td>1,704,914.27</td>
+                    <td class="variance-neg">(70,266.44)</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td class="date-col">27 Apr 2026</td>
+                    <td class="date-col">15 May 2026</td>
+                    <td>2,016,589.04</td>
+                    <td>1,951,380.19</td>
+                    <td class="variance-neg">(65,208.85)</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td class="date-col">29 May 2026</td>
+                    <td class="date-col">16 Jun 2026</td>
+                    <td>3,405,838.52</td>
+                    <td>3,260,585.62</td>
+                    <td class="variance-neg">(145,252.90)</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td class="date-col">29 Jun 2026</td>
+                    <td class="date-col">–</td>
+                    <td>3,980,123.25</td>
+                    <td style="color:#888; text-align:center;">Pending</td>
+                    <td style="color:#888; text-align:center;">Pending</td>
+                </tr>
+                <tr style="background-color: #f1f3f5; font-weight: bold; border-top: 2px solid #2c3e50;">
+                    <td colspan="3" style="text-align: center;">TOTAL PROJECT TO DATE (Interim 6)</td>
+                    <td>3,980,123.25</td>
+                    <td>3,260,585.62</td>
+                    <td class="variance-neg">(719,537.63)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="chart-box">
+            <div class="chart-title">Visual Comparison: Cumulative Progress Claim vs. CQS Valuation (Gross)</div>
+
+            <div id="chart1rows"></div>
+
+            <div class="legend" style="margin-bottom: 40px;">
+                <div class="legend-item"><div class="legend-dot bar-pc"></div> Submitted Gross Claim</div>
+                <div class="legend-item"><div class="legend-dot bar-vc"></div> CQS Certified Gross</div>
+            </div>
+
+            <h3 style="text-align:center; margin-top:20px; font-size: 1.1em; color: #2c3e50;">Project S-Curve Tracking: Forecast vs. Actual Certified</h3>
+            <div class="vo-toolbar" style="justify-content:center;">
+                <button type="button" class="btn-vo" onclick="downloadSCTemplate()">&#11015; Download Template (CSV)</button>
+                <label class="btn-vo secondary">
+                    &#11014; Upload Forecast (CSV)
+                    <input type="file" accept=".csv,text/csv" style="display:none;" onchange="handleSCUpload(event)">
+                </label>
+                <span class="vo-hint" style="margin-left:0;">Download brings the current forecast (PC, Forecast_Cumulative). Edit and upload to update (replaces the whole forecast).</span>
+                <span id="scSaveMsg" style="font-size:0.8em; font-weight:600; margin-left:6px;"></span>
+            </div>
+            <svg class="graph-svg" viewBox="0 0 1000 450" preserveAspectRatio="none">
+                <line x1="60" y1="50"  x2="960" y2="50"  class="grid-line" />
+                <line x1="60" y1="132" x2="960" y2="132" class="grid-line" />
+                <line x1="60" y1="215" x2="960" y2="215" class="grid-line" />
+                <line x1="60" y1="297" x2="960" y2="297" class="grid-line" />
+                <line x1="60" y1="380" x2="960" y2="380" class="grid-line" />
+
+                <line x1="60" y1="10"  x2="60"  y2="400" class="axis" />
+                <line x1="60" y1="400" x2="980" y2="400" class="axis" />
+
+                <g id="yAxisLabels"></g>
+
+                <g id="xAxisLabels"></g>
+
+                <polyline id="forecastLine" class="line-forecast" points="60,400" />
+
+                <g id="actualCurve"></g>
+            </svg>
+            <div class="legend">
+                <div class="legend-item"><div class="legend-line" style="background:#e67e22;"></div> Forecast S-Curve (Accm)</div>
+                <div class="legend-item"><div class="legend-line" style="border-top: 3px dashed #2c3e50;"></div> Actual CQS Valuation (Gross)</div>
+            </div>
+        </div>
+
+        <h2 class="dash-subheading">Table 2: Summary of Amount Due &amp; Payment Tracking</h2>
+        <div class="vo-toolbar">
+            <button type="button" class="btn-vo" onclick="downloadTemplate('t2')">&#11015; Download Template (CSV)</button>
+            <label class="btn-vo secondary">
+                &#11014; Upload Data (CSV)
+                <input type="file" accept=".csv,text/csv" style="display:none;" onchange="handleUpload('t2',event)">
+            </label>
+            <span class="vo-hint">Download brings the current Table 2 data. Edit in Excel, save as CSV, then upload to update (upload replaces the whole table). Leave blank cells for pending.</span>
+            <span id="t2SaveMsg" style="font-size:0.8em; font-weight:600; margin-left:6px;"></span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>CQS Cert Date</th>
+                    <th>Payment Due Date (+30 Days)</th>
+                    <th>Progress Claim Amount (RM)</th>
+                    <th>CQS Valuation Amount (RM)</th>
+                    <th>Variance (RM)</th>
+                    <th>Certified Amt Aft Rent. (RM)</th>
+                    <th>Payment Received (RM)</th>
+                    <th>Invoice No.</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="t2body">
+                <tr>
+                    <td>1</td>
+                    <td class="date-col">03 Feb 2026</td>
+                    <td class="date-col">05 Mar 2026</td>
+                    <td>985,666.10</td>
+                    <td>935,263.87</td>
+                    <td>50,402.23</td>
+                    <td class="cert-aft-rent-col">841,737.48</td>
+                    <td class="received-col">841,737.48</td>
+                    <td class="invoice-col">SI-2026-02-0020</td>
+                    <td class="status-received">RECEIVED</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td class="date-col">16 Mar 2026</td>
+                    <td class="date-col">15 Apr 2026</td>
+                    <td>814,914.51</td>
+                    <td>594,733.73</td>
+                    <td>220,180.78</td>
+                    <td class="cert-aft-rent-col">535,260.36</td>
+                    <td class="received-col">535,260.36</td>
+                    <td class="invoice-col">SI-2026-03-0037</td>
+                    <td class="status-received">RECEIVED</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td class="date-col">13 Apr 2026</td>
+                    <td class="date-col">13 May 2026</td>
+                    <td>245,183.11</td>
+                    <td>174,916.67</td>
+                    <td>70,266.44</td>
+                    <td class="cert-aft-rent-col">157,425.00</td>
+                    <td class="received-col">157,425.00</td>
+                    <td class="invoice-col">SI-2026-04-0025</td>
+                    <td class="status-received">RECEIVED</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td class="date-col">15 May 2026</td>
+                    <td class="date-col">14 Jun 2026</td>
+                    <td>311,674.77</td>
+                    <td>246,465.92</td>
+                    <td>65,208.85</td>
+                    <td class="cert-aft-rent-col">221,819.33</td>
+                    <td class="received-col">221,819.33</td>
+                    <td class="invoice-col">SI-2026-05-0019</td>
+                    <td class="status-received">RECEIVED</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td class="date-col">16 Jun 2026</td>
+                    <td class="date-col">16 Jul 2026</td>
+                    <td>1,454,458.33</td>
+                    <td>1,309,205.43</td>
+                    <td>145,252.90</td>
+                    <td class="cert-aft-rent-col">1,178,284.89</td>
+                    <td class="received-col">0.00</td>
+                    <td class="invoice-col">SI-2026-06-0041</td>
+                    <td class="status-not-due">NOT DUE</td>
+                </tr>
+                <tr style="background-color: #fffde7;">
+                    <td>6</td>
+                    <td class="date-col" style="color:#aaa;">Pending</td>
+                    <td class="date-col" style="color:#aaa;">Pending</td>
+                    <td>719,537.63</td>
+                    <td class="date-col" style="color:#aaa; font-weight:normal;">Pending</td>
+                    <td class="date-col" style="color:#aaa; font-weight:normal;">Pending</td>
+                    <td style="background:#f5f5f5; color:#aaa; text-align:center;">Pending</td>
+                    <td style="background:#f5f5f5; color:#aaa; text-align:center;">Pending</td>
+                    <td class="invoice-col" style="color:#aaa;">–</td>
+                    <td style="color:#e67e22; font-weight:bold; text-align:center;">PENDING CQS</td>
+                </tr>
+                <tr style="background-color: #f1f3f5; font-weight: bold; border-top: 2px solid #2c3e50;">
+                    <td colspan="3" style="text-align: center;">TOTAL (Certs 1–6)</td>
+                    <td>4,531,434.45</td>
+                    <td>3,260,585.62</td>
+                    <td>1,270,848.83</td>
+                    <td class="cert-aft-rent-col">2,934,527.06</td>
+                    <td class="received-col">1,756,242.17</td>
+                    <td>–</td>
+                    <td>–</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p style="font-style: italic; font-size: 0.85em; color: #555; margin-top: -10px; margin-bottom: 25px;">
+            * Progress Claim Amount (RM) = Progress claim amount (before retention) - previous amount certified by CQS. Thus, total amount will not tally to the total cumulative claim amount in Table 1.
+        </p>
+
+        <div class="chart-box">
+            <div class="chart-title">Visual Comparison: Periodic Claim vs. Valuation vs. Certified vs. Payment Received</div>
+
+            <div id="chart2rows"></div>
+
+            <div class="legend">
+                <div class="legend-item"><div class="legend-dot bar-pc"></div> Progress Claim Amount</div>
+                <div class="legend-item"><div class="legend-dot bar-vc"></div> CQS Valuation (Gross)</div>
+                <div class="legend-item"><div class="legend-dot bar-cert"></div> Certified Amount (90%)</div>
+                <div class="legend-item"><div class="legend-dot bar-received"></div> Payment Received</div>
+            </div>
+        </div>
+
+        <h2 class="dash-subheading">Table 3: Variation Order (VO) Register</h2>
+
+        <div class="vo-toolbar">
+            <button type="button" class="btn-vo" onclick="downloadVOTemplate()">&#11015; Download Template (CSV)</button>
+            <label class="btn-vo secondary">
+                &#11014; Upload VO Data (CSV)
+                <input type="file" id="voFileInput" accept=".csv,text/csv" style="display:none;" onchange="handleVOUpload(event)">
+            </label>
+            <span class="vo-hint">Download brings the current VO data. Edit in Excel, save as CSV, then upload to update (replaces the whole VO list).</span>
+            <span id="voSaveMsg" style="font-size:0.8em; font-weight:600; margin-left:6px;"></span>
+        </div>
+
+        <table id="voTable">
+            <thead>
+                <tr>
+                    <th style="width:8%;">Item</th>
+                    <th style="width:42%;">Description</th>
+                    <th style="width:16%;">Amount (RM)</th>
+                    <th style="width:17%;">Instruction From</th>
+                    <th style="width:17%;">Instruction Ref.</th>
+                </tr>
+            </thead>
+            <tbody id="voTableBody">
+                <tr id="voEmptyRow">
+                    <td colspan="5" style="text-align:center; color:#888; font-weight:normal; background:#fff; padding:20px;">
+                        No Variation Order data loaded yet. Download the template, fill it in, then upload the CSV.
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot id="voTableFoot" style="display:none;">
+                <tr style="background-color:#f1f3f5; font-weight:bold; border-top:2px solid #2c3e50;">
+                    <td colspan="2" style="text-align:center;">TOTAL VARIATION ORDER (RM)</td>
+                    <td id="voTotal">0.00</td>
+                    <td colspan="2" style="background:#f1f3f5;"></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <p style="font-style: italic; font-size: 0.85em; color: #555; margin-top: -10px; margin-bottom: 25px;">
+            * Enter omissions/credits as negative amounts (e.g. -8500.00); they are shown in red and netted off the total.
+        </p>
+
+        <div class="footer">
+            Generated for project monitoring based on Progress Claims (No. 1–6), CQS Valuations (VA01–VA05), and Master S-Curve Forecast.<br>
+            Note: Periodic claims for Cert 2 onwards are calculated as [Cumulative Claim] – [Previous CQS Cumulative Gross].<br>
+            Progress Claim No. 6 submitted 29 Jun 2026 (Cumulative Gross: RM 3,980,123.25) — CQS Certification Pending. Last certified: CQS Valuation No. 5 (RM 1,178,284.89 net) issued 16 Jun 2026 (Ref: UNI/23/055/MC/VA-005). Invoice SI-2026-06-0041 dated 18 Jun 2026. Payments for Cert No. 1 (RM 841,737.48), Cert No. 2 (RM 535,260.36), Cert No. 3 (RM 157,425.00) and Cert No. 4 (RM 221,819.33) confirmed received.
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     SECTION C: SYSTEM INTERACTION ARCHITECTURE
+     ========================================== -->
+<script>
+    // Live Deployed Google Apps Script Web App Deployment URL Link Reference
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz9YqBhLG-1dhlY-oTUC_RRJemxC0Cu53fWocNUCS2J4q8Iq0vnEzoosNh8DfE7n722/exec";
+
+    // Application Lifecycle Initialization Hook Verification Check
+    document.addEventListener("DOMContentLoaded", function() {
+        checkSessionState();
+    });
+
+    // Session State Machine Control Engine
+    function checkSessionState() {
+        const activeSessionToken = sessionStorage.getItem("portal_session_token");
+        const bodyEl = document.getElementById("portalBody");
+        const loginViewEl = document.getElementById("loginView");
+        const dashboardViewEl = document.getElementById("dashboardView");
+
+        if (activeSessionToken && activeSessionToken === "AUTHENTICATED_PROXIMAL_SESSION") {
+            // Render Dashboard Mode Frame View Matrix
+            bodyEl.className = "dashboard-mode";
+            loginViewEl.style.display = "none";
+            dashboardViewEl.style.display = "block";
+            loadReportData();
+        } else {
+            // Render Login Mode Frame View Matrix
+            bodyEl.className = "login-mode";
+            loginViewEl.style.display = "block";
+            dashboardViewEl.style.display = "none";
+            // Clean up potentially corrupt session parameters safely
+            sessionStorage.removeItem("portal_session_token");
+        }
+    }
+
+    // Capture Submit Action Processing Event
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        
+        const msgBox = document.getElementById('msgBox');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const btnSpinner = document.getElementById('btnSpinner');
+
+        // Reset runtime notification output parameters
+        msgBox.className = "notification";
+        msgBox.style.display = "none";
+        
+        // Safety Fallback Trap Validation
+        if (WEB_APP_URL.includes("YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
+            msgBox.textContent = "Configuration Error: Please update the WEB_APP_URL macro value inside this file's script tags.";
+            msgBox.classList.add('error');
+            return;
+        }
+
+        // Apply interactive locked interface elements
+        submitBtn.disabled = true;
+        btnText.style.display = "none";
+        btnSpinner.style.display = "block";
+
+        // Dispatch credential validation payload across endpoint parameters
+        fetch(WEB_APP_URL, {
+            method: 'POST',
+            mode: 'cors',
+            redirect: 'follow',
+            headers: {
+                'Content-Type': 'text/plain;charset=utf-8'
+            },
+            body: JSON.stringify({ email: email, password: password })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network server validation connectivity handshake failure.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            submitBtn.disabled = false;
+            btnText.style.display = "block";
+            btnSpinner.style.display = "none";
+
+            if (data.status === "success") {
+                msgBox.textContent = "Access Validated! Opening secure report portal matrix...";
+                msgBox.className = "notification success";
+                
+                // Set structural session flags inside memory
+                sessionStorage.setItem("portal_session_token", "AUTHENTICATED_PROXIMAL_SESSION");
+                
+                // Transition layout views cleanly after brief display latency window
+                setTimeout(() => {
+                    checkSessionState();
+                }, 1000);
+            } else {
+                msgBox.textContent = data.message || "Invalid credentials provided.";
+                msgBox.className = "notification error";
+            }
+        })
+        .catch(error => {
+            submitBtn.disabled = false;
+            btnText.style.display = "block";
+            btnSpinner.style.display = "none";
+            
+            msgBox.textContent = "Connection Failure: Unable to complete authentication loop. Ensure Apps Script deployment properties are running as 'Me' and shared with 'Anyone'.";
+            msgBox.className = "notification error";
+            console.error("Auth Exception Matrix Log:", error);
+        });
+    });
+
+    // ==========================================
+    //  DATA SYNC (Google Sheets) + VARIATION ORDER
+    // ==========================================
+    // Paste the /exec URL of your DATA Apps Script deployment and the
+    // SAME token you set as WRITE_TOKEN in Code.gs.
+    const DATA_API_URL   = "https://script.google.com/macros/s/AKfycbyqXLqnu7-hX3r4dH30FJTmapqjC9GOzXqQIYIyY7Y8KdU_VmNpz7qLLxsZ2yqklGJb/exec";
+    const DATA_API_TOKEN = "sv2-9f3k-72bd-QX18-2026";
+
+    const esc = s => String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const fmt = n => Number(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+    const isNum = v => v!=="" && v!==null && v!==undefined && !isNaN(parseFloat(v)) && isFinite(v);
+
+    // ---- Header: current status = latest claim number in the data ----
+    function updateCurrentStatus(t1){
+        const el=document.getElementById("currentStatusPC"); if(!el) return;
+        const nos=(t1||[]).map(r=>parseInt(r.No,10)).filter(n=>!isNaN(n));
+        if(nos.length) el.textContent=Math.max.apply(null,nos);
+    }
+
+    // ---- Load all tables from the Google Sheet (called after login) ----
+    function loadReportData(){
+        if(DATA_API_URL.indexOf("PASTE_")===0){ console.warn("DATA_API_URL not set — showing built-in snapshot."); return; }
+        fetch(DATA_API_URL,{method:"GET",redirect:"follow"})
+          .then(r=>r.json())
+          .then(d=>{
+              if(d.status!=="success"){ console.warn("Data API error:",d.message); return; }
+              CACHE.t1 = d.table1 || [];
+              CACHE.t2 = d.table2 || [];
+              CACHE.forecast = d.scurve || [];
+              CACHE.vo = voFromSheet(d.vo || []);
+              updateCurrentStatus(CACHE.t1);
+              if(d.table1){ renderTable1(d.table1); renderChart1(d.table1); }
+              if(d.table2){ renderTable2(d.table2); renderChart2(d.table2); }
+              renderSCurveChart(CACHE.forecast, CACHE.t1);
+              renderVO(CACHE.vo);
+          })
+          .catch(e=>console.warn("Data load failed; built-in snapshot kept.",e));
+    }
+
+    // ---- Table 1: Cumulative gross ----
+    function renderTable1(rows){
+        const b=document.getElementById("t1body"); if(!b) return;
+        let h="", lastClaim=null, lastCqs=null, n=0;
+        rows.forEach(r=>{
+            n++;
+            const claim=isNum(r.Claim_Gross)?parseFloat(r.Claim_Gross):null;
+            const cqs  =isNum(r.CQS_Gross)?parseFloat(r.CQS_Gross):null;
+            if(claim!==null) lastClaim=claim;
+            if(cqs!==null)   lastCqs=cqs;
+            const v=(cqs!==null&&claim!==null)?cqs-claim:null;
+            h+=`<tr><td>${esc(r.No)}</td>`
+             +`<td class="date-col">${esc(r.PC_Submit_Date||"–")}</td>`
+             +`<td class="date-col">${esc(r.CQS_Cert_Date||"–")}</td>`
+             +`<td>${claim!==null?fmt(claim):"Pending"}</td>`
+             +(cqs!==null?`<td>${fmt(cqs)}</td>`:`<td style="color:#888;text-align:center;">Pending</td>`)
+             +(v!==null?`<td class="variance-neg">(${fmt(Math.abs(v))})</td>`:`<td style="color:#888;text-align:center;">Pending</td>`)
+             +`</tr>`;
+        });
+        const tv=(lastCqs!==null&&lastClaim!==null)?lastCqs-lastClaim:null;
+        h+=`<tr style="background-color:#f1f3f5;font-weight:bold;border-top:2px solid #2c3e50;">`
+          +`<td colspan="3" style="text-align:center;">TOTAL PROJECT TO DATE (Interim ${n})</td>`
+          +`<td>${lastClaim!==null?fmt(lastClaim):"–"}</td>`
+          +`<td>${lastCqs!==null?fmt(lastCqs):"–"}</td>`
+          +(tv!==null?`<td class="variance-neg">(${fmt(Math.abs(tv))})</td>`:`<td>–</td>`)
+          +`</tr>`;
+        b.innerHTML=h;
+    }
+
+    // ---- Table 2: Payment tracking ----
+    function stClass(s){ s=(s||"").toUpperCase();
+        if(s.includes("RECEIVED"))return "status-received";
+        if(s.includes("NOT DUE"))return "status-not-due";
+        if(s.includes("PENDING"))return "status-not-due";
+        if(s.includes("DUE"))return "status-due";
+        return ""; }
+    // Parse "16 Jul 2026" (also tolerates other Date-parseable strings)
+    function parseDMY(s){
+        if(!s) return null; s=String(s).trim();
+        const M={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+        const m=s.match(/^(\d{1,2})[\s\-\/]+([A-Za-z]{3,})[\s\-\/]+(\d{4})$/);
+        if(m){ const mo=M[m[2].slice(0,3).toLowerCase()]; if(mo!==undefined) return new Date(+m[3],mo,+m[1]); }
+        const d=new Date(s); return isNaN(d.getTime())?null:d;
+    }
+    // Auto status: PENDING CQS -> RECEIVED (fully paid) -> date vs today (NOT DUE / DUE)
+    function computeStatus(r){
+        const cqs =isNum(r.CQS_Amount)?parseFloat(r.CQS_Amount):null;
+        const cert=isNum(r.Cert_Aft_Retention)?parseFloat(r.Cert_Aft_Retention):null;
+        const rec =isNum(r.Payment_Received)?parseFloat(r.Payment_Received):null;
+        if(cqs===null) return "PENDING CQS";
+        if(cert!==null && cert>0 && rec!==null && rec>=cert-0.005) return "RECEIVED";
+        const due=parseDMY(r.Payment_Due_Date);
+        if(due){ const t=new Date(); t.setHours(0,0,0,0);
+                 return (due.getTime()>=t.getTime()) ? "NOT DUE" : "DUE"; }
+        return "PENDING CQS";
+    }
+    function renderTable2(rows){
+        const b=document.getElementById("t2body"); if(!b) return;
+        const dc = v => v?`<td class="date-col">${esc(v)}</td>`:`<td class="date-col" style="color:#aaa;">Pending</td>`;
+        const gp='style="color:#aaa;text-align:center;background:#f5f5f5;"';
+        let h="", n=0, sC=0,sQ=0,sV=0,sR=0,sP=0;
+        rows.forEach(r=>{
+            n++;
+            const claim=isNum(r.Claim_Amount)?parseFloat(r.Claim_Amount):null;
+            const cqs  =isNum(r.CQS_Amount)?parseFloat(r.CQS_Amount):null;
+            const cert =isNum(r.Cert_Aft_Retention)?parseFloat(r.Cert_Aft_Retention):null;
+            const rec  =isNum(r.Payment_Received)?parseFloat(r.Payment_Received):null;
+            const v=(cqs!==null&&claim!==null)?claim-cqs:null;
+            if(claim!==null)sC+=claim; if(cqs!==null)sQ+=cqs; if(v!==null)sV+=v;
+            if(cert!==null)sR+=cert; if(rec!==null)sP+=rec;
+            const pend=(cqs===null);
+            h+=`<tr${pend?' style="background-color:#fffde7;"':''}><td>${esc(r.No)}</td>`
+             +dc(r.CQS_Cert_Date)+dc(r.Payment_Due_Date)
+             +`<td>${claim!==null?fmt(claim):"Pending"}</td>`
+             +(cqs!==null?`<td>${fmt(cqs)}</td>`:`<td style="color:#aaa;text-align:center;">Pending</td>`)
+             +(v!==null?`<td>${fmt(v)}</td>`:`<td style="color:#aaa;text-align:center;">Pending</td>`)
+             +(cert!==null?`<td class="cert-aft-rent-col">${fmt(cert)}</td>`:`<td ${gp}>Pending</td>`)
+             +(rec!==null?`<td class="received-col">${fmt(rec)}</td>`:`<td ${gp}>Pending</td>`)
+             +`<td class="invoice-col">${esc(r.Invoice_No||"–")}</td>`
+             +`<td class="${stClass(computeStatus(r))}" title="Due: ${esc(r.Payment_Due_Date||"—")}">${esc(computeStatus(r))}</td></tr>`;
+        });
+        h+=`<tr style="background-color:#f1f3f5;font-weight:bold;border-top:2px solid #2c3e50;">`
+          +`<td colspan="3" style="text-align:center;">TOTAL (Certs 1–${n})</td>`
+          +`<td>${fmt(sC)}</td><td>${fmt(sQ)}</td><td>${fmt(sC-sQ)}</td>`
+          +`<td class="cert-aft-rent-col">${fmt(sR)}</td>`
+          +`<td class="received-col">${fmt(sP)}</td><td>–</td><td>–</td></tr>`;
+        b.innerHTML=h;
+    }
+
+    // ---- Table 3: Variation Order ----
+    function downloadVOTemplate(){
+        const headers=["Item","Description","Amount","Instruction From","Instruction Ref."];
+        const samples=[["1","Additional RC works to Block A basement wall","15000.00","Architect","AI No. 012"],
+                       ["2","Omission of ceramic wall tiles at Level 3 lobby","-8500.00","Consultant QS","CVI No. 005"]];
+        const rows=(CACHE.vo && CACHE.vo.length)
+            ? CACHE.vo.map(x=>[x.item,x.description,x.amount,x.instructionFrom,x.instructionRef])
+            : samples;
+        csvDownload("Variation_Order_Template.csv", headers, rows);
+    }
+    function parseCSV(text){
+        const rows=[]; let cur=[],f="",q=false;
+        for(let i=0;i<text.length;i++){const c=text[i];
+          if(q){ if(c==='"'){ if(text[i+1]==='"'){f+='"';i++;} else q=false; } else f+=c; }
+          else{ if(c==='"')q=true; else if(c===","){cur.push(f);f="";} else if(c==="\r"){} else if(c==="\n"){cur.push(f);rows.push(cur);cur=[];f="";} else f+=c; }
+        }
+        if(f!==""||cur.length){cur.push(f);rows.push(cur);} return rows;
+    }
+    function voFromSheet(rows){
+        return rows.map(r=>({item:r.Item,description:r.Description,
+            amount:isNum(r.Amount)?parseFloat(r.Amount):0,
+            instructionFrom:r.Instruction_From,instructionRef:r.Instruction_Ref}));
+    }
+    function renderVO(items){
+        const body=document.getElementById("voTableBody"), foot=document.getElementById("voTableFoot");
+        if(!body) return;
+        items=(items||[]).filter(x=>(x.item&&String(x.item).trim()!=="")||(x.description&&String(x.description).trim()!==""));
+        if(items.length===0){
+            body.innerHTML=`<tr id="voEmptyRow"><td colspan="5" style="text-align:center;color:#888;font-weight:normal;background:#fff;padding:20px;">No Variation Order data loaded yet. Download the template, fill it in, then upload the CSV.</td></tr>`;
+            if(foot) foot.style.display="none"; return;
+        }
+        let h="",total=0;
+        items.forEach(x=>{
+            const a=isNum(x.amount)?parseFloat(x.amount):0; total+=a;
+            h+=`<tr><td>${esc(x.item)}</td>`
+             +`<td class="vo-desc">${esc(x.description)}</td>`
+             +(a<0?`<td class="variance-neg">(${fmt(Math.abs(a))})</td>`:`<td>${fmt(a)}</td>`)
+             +`<td class="vo-center">${esc(x.instructionFrom)}</td>`
+             +`<td class="invoice-col">${esc(x.instructionRef)}</td></tr>`;
+        });
+        body.innerHTML=h;
+        const t=document.getElementById("voTotal");
+        t.textContent=total<0?`(${fmt(Math.abs(total))})`:fmt(total);
+        t.className=total<0?"variance-neg":"";
+        if(foot) foot.style.display="table-footer-group";
+    }
+    function handleVOUpload(event){
+        const file=event.target.files&&event.target.files[0]; if(!file) return;
+        const reader=new FileReader();
+        reader.onload=function(e){
+            let content=e.target.result; if(content.charCodeAt(0)===0xFEFF)content=content.slice(1);
+            const rows=parseCSV(content).filter(r=>r.some(c=>c&&c.trim()!==""));
+            if(rows.length===0){alert("The CSV file appears to be empty.");event.target.value="";return;}
+            let start=0; const first=rows[0].map(c=>c.toLowerCase().trim());
+            if(first.indexOf("item")!==-1||first.indexOf("description")!==-1)start=1;
+            const items=[];
+            for(let i=start;i<rows.length;i++){const r=rows[i];
+                const item=(r[0]||"").trim(), desc=(r[1]||"").trim();
+                if(!item&&!desc)continue;
+                const amt=parseFloat((r[2]||"").replace(/[^0-9.\-]/g,""));
+                items.push({item,description:desc,amount:isNaN(amt)?0:amt,
+                    instructionFrom:(r[3]||"").trim(),instructionRef:(r[4]||"").trim()});
+            }
+            if(items.length===0){alert("No valid data rows found. Check the CSV matches the template.");event.target.value="";return;}
+            CACHE.vo=items; renderVO(items); saveVO(items); event.target.value="";
+        };
+        reader.onerror=function(){alert("Could not read the file.");event.target.value="";};
+        reader.readAsText(file);
+    }
+    function saveVO(items){
+        const msg=document.getElementById("voSaveMsg");
+        if(DATA_API_URL.indexOf("PASTE_")===0){ if(msg){msg.style.color="#c0392b";msg.textContent="Shown locally — Google Sheet backup not configured yet.";} return; }
+        const rows=items.map(x=>[x.item,x.description,x.amount,x.instructionFrom,x.instructionRef]);
+        if(msg){msg.style.color="#888";msg.textContent="Saving to Google Sheet…";}
+        fetch(DATA_API_URL,{method:"POST",redirect:"follow",headers:{"Content-Type":"text/plain;charset=utf-8"},
+            body:JSON.stringify({token:DATA_API_TOKEN,action:"saveVO",rows})})
+          .then(r=>r.json())
+          .then(d=>{ if(msg){ if(d.status==="success"){msg.style.color="#1e8449";msg.textContent=`Saved ${d.saved} VO row(s) to Google Sheet ✓`;}
+                             else{msg.style.color="#c0392b";msg.textContent="Sheet save failed: "+(d.message||"unknown");} } })
+          .catch(e=>{ if(msg){msg.style.color="#c0392b";msg.textContent="Sheet save failed (network) — shown locally only.";} });
+    }
+
+    // ---- Table 1 & 2: template download + upload (saves to Google Sheet) ----
+    const T1_HDR=["No","PC_Submit_Date","CQS_Cert_Date","Claim_Gross","CQS_Gross"];
+    const T2_HDR=["No","CQS_Cert_Date","Payment_Due_Date","Claim_Amount","CQS_Amount","Cert_Aft_Retention","Payment_Received","Invoice_No","Status"];
+    const T1_SAMPLE=["7","27 Jul 2026","10 Aug 2026","4500000.00",""];
+    const T2_SAMPLE=["7","10 Aug 2026","09 Sep 2026","519876.75","","","","SI-2026-07-0055","PENDING CQS"];
+
+    function csvDownload(name, headers, rows){
+        const enc=c=>`"${String(c==null?"":c).replace(/"/g,'""')}"`;
+        let csv=headers.map(enc).join(",")+"\r\n";
+        (rows||[]).forEach(r=>csv+=r.map(enc).join(",")+"\r\n");
+        const blob=new Blob(["﻿"+csv],{type:"text/csv;charset=utf-8;"});
+        const url=URL.createObjectURL(blob), a=document.createElement("a");
+        a.href=url; a.download=name; document.body.appendChild(a); a.click();
+        document.body.removeChild(a); URL.revokeObjectURL(url);
+    }
+    function cacheRows(arr, headers, sample){
+        if(arr && arr.length) return arr.map(o=>headers.map(hh=>{const v=o[hh]; return (v===undefined||v===null)?"":v;}));
+        return [sample];
+    }
+    function downloadTemplate(kind){
+        if(kind==="t1") csvDownload("Table1_Cumulative_Template.csv",T1_HDR,cacheRows(CACHE.t1,T1_HDR,T1_SAMPLE));
+        else            csvDownload("Table2_Payment_Template.csv",T2_HDR,cacheRows(CACHE.t2,T2_HDR,T2_SAMPLE));
+    }
+    function rowsToObjects(rows, headers){
+        let start=0;
+        const first=rows[0].map(c=>String(c).toLowerCase().trim());
+        if(first.includes("no")||first.includes(headers[3].toLowerCase())) start=1;
+        const out=[];
+        for(let i=start;i<rows.length;i++){
+            const r=rows[i];
+            if(r.every(c=>String(c).trim()==="")) continue;
+            const o={};
+            headers.forEach((h,j)=>o[h]=(r[j]!==undefined?String(r[j]).trim():""));
+            if(String(o[headers[0]]).trim()===""&&String(o[headers[1]]).trim()==="") continue;
+            out.push(o);
+        }
+        return out;
+    }
+    function handleUpload(kind, event){
+        const file=event.target.files&&event.target.files[0]; if(!file) return;
+        const headers=(kind==="t1")?T1_HDR:T2_HDR;
+        const reader=new FileReader();
+        reader.onload=function(e){
+            let content=e.target.result; if(content.charCodeAt(0)===0xFEFF)content=content.slice(1);
+            const rows=parseCSV(content).filter(r=>r.some(c=>c&&String(c).trim()!==""));
+            if(rows.length===0){alert("The CSV file appears to be empty.");event.target.value="";return;}
+            const objs=rowsToObjects(rows, headers);
+            if(objs.length===0){alert("No valid data rows found. Check the CSV matches the template.");event.target.value="";return;}
+            if(kind==="t1"){ CACHE.t1=objs; updateCurrentStatus(objs); renderTable1(objs); renderChart1(objs); renderSCurveChart(CACHE.forecast, CACHE.t1); saveTable("saveTable1", objs, headers, "t1SaveMsg"); }
+            else           { CACHE.t2=objs; renderTable2(objs); renderChart2(objs); saveTable("saveTable2", objs, headers, "t2SaveMsg"); }
+            event.target.value="";
+        };
+        reader.onerror=function(){alert("Could not read the file.");event.target.value="";};
+        reader.readAsText(file);
+    }
+    function saveTable(action, objs, headers, msgId){
+        const msg=document.getElementById(msgId);
+        if(DATA_API_URL.indexOf("PASTE_")===0){ if(msg){msg.style.color="#c0392b";msg.textContent="Shown locally — Google Sheet backup not configured yet.";} return; }
+        const rows=objs.map(o=>headers.map(h=>{ const v=o[h]; return isNum(v)?parseFloat(v):(v===undefined?"":v); }));
+        if(msg){msg.style.color="#888";msg.textContent="Saving to Google Sheet…";}
+        fetch(DATA_API_URL,{method:"POST",redirect:"follow",headers:{"Content-Type":"text/plain;charset=utf-8"},
+            body:JSON.stringify({token:DATA_API_TOKEN,action,rows})})
+          .then(r=>r.json())
+          .then(d=>{ if(msg){ if(d.status==="success"){msg.style.color="#1e8449";msg.textContent=`Saved ${d.saved} row(s) to Google Sheet ✓`;}
+                             else{msg.style.color="#c0392b";msg.textContent="Sheet save failed: "+(d.message||"unknown");} } })
+          .catch(e=>{ if(msg){msg.style.color="#c0392b";msg.textContent="Sheet save failed (network) — shown locally only.";} });
+    }
+
+    // ---- Charts driven by the Sheet data ----
+    const fmt0 = n => Math.round(Number(n)).toLocaleString("en-US");
+
+    // Chart 1: cumulative Claim vs CQS (bars scaled to the largest cumulative claim)
+    function renderChart1(rows){
+        const box=document.getElementById("chart1rows"); if(!box) return;
+        const max=Math.max.apply(null, rows.map(r=>isNum(r.Claim_Gross)?parseFloat(r.Claim_Gross):0).concat([1]));
+        let h="";
+        rows.forEach(r=>{
+            const claim=isNum(r.Claim_Gross)?parseFloat(r.Claim_Gross):null;
+            const cqs  =isNum(r.CQS_Gross)?parseFloat(r.CQS_Gross):null;
+            h+=`<div class="chart-row"><div class="chart-label">Interim No. ${esc(r.No)}</div><div class="bar-container">`;
+            h+=`<div class="bar bar-pc" style="width:${claim!==null?(claim/max*100).toFixed(1):0}%;">RM ${claim!==null?fmt0(claim):"–"}</div>`;
+            h+=(cqs!==null)
+                ? `<div class="bar bar-vc" style="width:${(cqs/max*100).toFixed(1)}%;">RM ${fmt0(cqs)}</div>`
+                : `<div style="font-size:0.8em;color:#888;padding:2px 8px;font-style:italic;">CQS Valuation — Pending</div>`;
+            h+=`</div></div>`;
+        });
+        box.innerHTML=h;
+    }
+
+    // Chart 2: periodic Claim / Valued / Certified / Received (scaled to largest claim)
+    function renderChart2(rows){
+        const box=document.getElementById("chart2rows"); if(!box) return;
+        const max=Math.max.apply(null, rows.map(r=>isNum(r.Claim_Amount)?parseFloat(r.Claim_Amount):0).concat([1]));
+        const w=v=>(v/max*100).toFixed(1);
+        let h="";
+        rows.forEach(r=>{
+            const claim=isNum(r.Claim_Amount)?parseFloat(r.Claim_Amount):null;
+            const cqs  =isNum(r.CQS_Amount)?parseFloat(r.CQS_Amount):null;
+            const cert =isNum(r.Cert_Aft_Retention)?parseFloat(r.Cert_Aft_Retention):null;
+            const rec  =isNum(r.Payment_Received)?parseFloat(r.Payment_Received):null;
+            h+=`<div class="chart-row"><div class="chart-label">Interim No. ${esc(r.No)}</div><div class="bar-container">`;
+            h+=`<div class="bar bar-pc" style="width:${claim!==null?w(claim):0}%;">Claim: RM ${claim!==null?fmt0(claim):"–"}</div>`;
+            if(cqs!==null){
+                h+=`<div class="bar bar-vc" style="width:${w(cqs)}%;">Valued: RM ${fmt0(cqs)}</div>`;
+                h+=`<div class="bar bar-cert" style="width:${cert!==null?w(cert):0}%;">${cert!==null?"Certified: RM "+fmt0(cert):""}</div>`;
+                h+=`<div class="bar bar-received" style="width:${rec!==null?w(rec):0}%;">${rec!==null&&rec>0?"Received: RM "+fmt0(rec):""}</div>`;
+            } else {
+                h+=`<div style="font-size:0.8em;color:#888;padding:2px 8px;font-style:italic;">CQS Valuation / Certified / Received — Pending</div>`;
+            }
+            h+=`</div></div>`;
+        });
+        box.innerHTML=h;
+    }
+
+    // ---- S-curve forecast: template + upload (backed up in Google Sheet) ----
+    var CACHE = { t1: [], t2: [], vo: [], forecast: [] };
+    const SC_HDR = ["PC","Forecast_Cumulative"];
+    const SC_SAMPLE = ["1","1147000"];
+    function fmtM(v){ return "RM "+(Number(v)/1e6).toFixed(1)+"M"; }
+
+    function downloadSCTemplate(){ csvDownload("SCurve_Forecast_Template.csv", SC_HDR, cacheRows(CACHE.forecast, SC_HDR, SC_SAMPLE)); }
+
+    function handleSCUpload(event){
+        const file=event.target.files&&event.target.files[0]; if(!file) return;
+        const reader=new FileReader();
+        reader.onload=function(e){
+            let content=e.target.result; if(content.charCodeAt(0)===0xFEFF)content=content.slice(1);
+            const rows=parseCSV(content).filter(r=>r.some(c=>c&&String(c).trim()!==""));
+            if(rows.length===0){alert("The CSV file appears to be empty.");event.target.value="";return;}
+            let start=0; const first=rows[0].map(c=>String(c).toLowerCase().trim());
+            if(first.includes("pc")||first.includes("forecast_cumulative"))start=1;
+            const objs=[];
+            for(let i=start;i<rows.length;i++){ const r=rows[i];
+                const pc=(r[0]!==undefined?String(r[0]).trim():"");
+                const val=(r[1]!==undefined?String(r[1]).trim():"");
+                if(pc===""&&val==="")continue;
+                objs.push({PC:pc, Forecast_Cumulative:val});
+            }
+            if(objs.length===0){alert("No valid rows found. Check the CSV matches the template (PC, Forecast_Cumulative).");event.target.value="";return;}
+            CACHE.forecast=objs;
+            renderSCurveChart(CACHE.forecast, CACHE.t1);
+            saveTable("saveSCurve", objs, SC_HDR, "scSaveMsg");
+            event.target.value="";
+        };
+        reader.onerror=function(){alert("Could not read the file.");event.target.value="";};
+        reader.readAsText(file);
+    }
+
+    // Draw the whole S-curve. Scale (Y max, PC max) is derived from the forecast data
+    // plus the actual cumulative CQS from Table 1, so an edited forecast rescales the chart.
+    function renderSCurveChart(forecast, t1){
+        forecast=forecast||[]; t1=t1||[];
+        const fpts=forecast.map(r=>({pc:parseInt(r.PC,10), v:isNum(r.Forecast_Cumulative)?parseFloat(r.Forecast_Cumulative):null}))
+                           .filter(p=>!isNaN(p.pc)&&p.v!==null).sort((a,b)=>a.pc-b.pc);
+        const apts=t1.map(r=>({pc:parseInt(r.No,10), v:isNum(r.CQS_Gross)?parseFloat(r.CQS_Gross):null}))
+                     .filter(p=>!isNaN(p.pc)&&p.v!==null).sort((a,b)=>a.pc-b.pc);
+        let maxPc=40, axisMax=133800000;
+        const allPc=fpts.map(p=>p.pc).concat(apts.map(p=>p.pc));
+        const allV =fpts.map(p=>p.v).concat(apts.map(p=>p.v));
+        if(allPc.length) maxPc=Math.max.apply(null, allPc.concat([1]));
+        if(allV.length)  axisMax=Math.max.apply(null, allV.concat([1]));
+        const X=pc=>60+(pc/maxPc)*900;
+        const Y=v=>400-(v/axisMax)*350;
+
+        const yl=document.getElementById("yAxisLabels");
+        if(yl) yl.innerHTML=`<text x="5" y="55" class="axis-label">${fmtM(axisMax)}</text>`
+             +`<text x="8" y="220" class="axis-label">${fmtM(axisMax/2)}</text>`
+             +`<text x="40" y="405" class="axis-label">0</text>`;
+
+        const xl=document.getElementById("xAxisLabels");
+        if(xl){ const marks=[...new Set([1,Math.round(maxPc*0.25),Math.round(maxPc*0.5),Math.round(maxPc*0.75),maxPc])];
+            xl.innerHTML=marks.map(pc=>`<text x="${X(pc).toFixed(0)}" y="420" class="axis-label">PC ${pc}</text>`).join(""); }
+
+        const fl=document.getElementById("forecastLine");
+        if(fl){ let pts="60,400"; fpts.forEach(p=>pts+=` ${X(p.pc).toFixed(1)},${Y(p.v).toFixed(1)}`); fl.setAttribute("points",pts); }
+
+        const g=document.getElementById("actualCurve");
+        if(g){
+            let pts="60,400", circles="", lastPc=0, lastV=null;
+            apts.forEach(p=>{ const x=X(p.pc).toFixed(1), y=Y(p.v).toFixed(1); pts+=` ${x},${y}`;
+                circles+=`<circle cx="${x}" cy="${y}" r="3" class="data-point-vc" />`; lastPc=p.pc; lastV=p.v; });
+            let svg=`<polyline class="line-actual-vc" points="${pts}" />`+circles;
+            if(lastV!==null){ const x=X(lastPc), y=Y(lastV);
+                svg+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4" class="data-point-vc" />`
+                   +`<text x="${(x+5).toFixed(1)}" y="${(y-4).toFixed(1)}" font-size="10" fill="#2c3e50" font-weight="bold">PC ${lastPc}</text>`; }
+            const pend=t1.find(r=>isNum(r.Claim_Gross)&&!isNum(r.CQS_Gross));
+            if(pend){ const pc=parseInt(pend.No,10), x=X(pc), y=Y(parseFloat(pend.Claim_Gross));
+                svg+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" fill="none" stroke="#3498db" stroke-width="2" stroke-dasharray="3,2" />`
+                   +`<text x="${(x+5).toFixed(1)}" y="${(y-3).toFixed(1)}" font-size="10" fill="#3498db" font-weight="bold">PC ${pc} ⏳</text>`; }
+            g.innerHTML=svg;
+        }
+    }
+
+    // Clear State Destruction Engine
+    function handleLogout() {
+        sessionStorage.removeItem("portal_session_token");
+        // Reset local form values to clear state metrics safely
+        document.getElementById('loginForm').reset();
+        checkSessionState();
+    }
+</script>
+
+</body>
+</html>
